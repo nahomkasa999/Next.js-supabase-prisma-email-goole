@@ -1,105 +1,216 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# 🚀 Supabase Auth + Database Trigger Setup Guide
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+**Immediate use setup for Supabase Auth and database with automatic user tracking.**
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## 📋 What This Does
 
-## Features
+- ✅ **Automatically creates user records** when someone signs up (email/password or OAuth)
+- ✅ **Tracks user activity** with timestamps
+- ✅ **Works with Google OAuth** and other providers
+- ✅ **Secure with Row Level Security (RLS)**
+- ✅ **Performance optimized** with indexes
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 🎯 Quick Start (5 Minutes)
 
-## Demo
+### Step 1: Run Database Setup
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+1. **Open Supabase Dashboard** → Your Project → SQL Editor
+2. **Copy and paste** the contents of `database-setup.sql`
+3. **Click "Run"** to execute the script
+4. **Verify success** - you should see "Success" message
 
-## Deploy to Vercel
+### Step 2: Test the Setup
 
-Vercel deployment will guide you through creating a Supabase account and project.
+1. **Go to your app's signup page**
+2. **Create a new account** (email/password or Google)
+3. **Check Supabase Dashboard** → Table Editor → `users` table
+4. **Verify user record was created automatically**
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+## 🔧 Google OAuth Setup (Optional)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
-
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
-
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
-
-## Clone and run locally
-
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
-
-2. Create a Next.js app using the Supabase Starter template npx command
-
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+### 1. Google Cloud Console
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create/select project → Enable Google+ API
+3. **Credentials** → **Create OAuth 2.0 Client ID**
+4. **Web application** → Add redirect URI:
+   ```
+   https://[your-project-ref].supabase.co/auth/v1/callback
    ```
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+### 2. Supabase Dashboard
+1. **Authentication** → **Providers** → **Google**
+2. **Enable Google** → Add Client ID & Secret
+3. **Save** configuration
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+## 📊 What Gets Created
 
-3. Use `cd` to change into the app's directory
+### Database Table: `public.users`
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | UUID | User ID (matches auth.users.id) |
+| `email` | TEXT | User's email address |
+| `full_name` | TEXT | Full name from OAuth/signup |
+| `avatar_url` | TEXT | Avatar URL from OAuth |
+| `created_at` | TIMESTAMP | When user was created |
+| `updated_at` | TIMESTAMP | When user was last updated |
+| `last_seen` | TIMESTAMP | When user was last active |
+| `is_active` | BOOLEAN | Account status |
 
-   ```bash
-   cd with-supabase-app
-   ```
+### Database Triggers
+- **`on_auth_user_created`** - Fires when user signs up
+- **`on_auth_user_activity`** - Updates last_seen timestamp
 
-4. Rename `.env.example` to `.env.local` and update the following:
+### Security (RLS Policies)
+- Users can only view/update their own data
+- Secure against unauthorized access
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+## 🔄 How It Works
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+```
+1. User signs up (email/password or Google)
+   ↓
+2. Supabase Auth creates record in auth.users
+   ↓
+3. Database trigger fires automatically
+   ↓
+4. User record created in public.users
+   ↓
+5. Frontend can access user data immediately
+```
 
-5. You can now run the Next.js local development server:
+## 🧪 Testing Checklist
 
-   ```bash
-   npm run dev
-   ```
+### ✅ Email/Password Signup
+- [ ] Create account with email/password
+- [ ] Check `public.users` table has new record
+- [ ] Verify `full_name` and `email` are populated
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+### ✅ Google OAuth Signup
+- [ ] Click "Continue with Google"
+- [ ] Complete Google authentication
+- [ ] Check `public.users` table has new record
+- [ ] Verify `avatar_url` and `full_name` from Google
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+### ✅ User Activity Tracking
+- [ ] Sign in as user
+- [ ] Navigate around app
+- [ ] Check `last_seen` timestamp updates
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+## 🛠️ Troubleshooting
 
-## Feedback and issues
+### Problem: User exists in auth.users but not public.users
+**Solution**: Check if triggers are created
+```sql
+SELECT * FROM information_schema.triggers 
+WHERE trigger_name LIKE '%user%';
+```
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+### Problem: RLS blocking user access
+**Solution**: Verify RLS policies
+```sql
+SELECT * FROM pg_policies WHERE tablename = 'users';
+```
 
-## More Supabase examples
+### Problem: Trigger not firing
+**Solution**: Check Supabase logs for errors
+- Go to Dashboard → Logs → Database
+- Look for trigger-related errors
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+## 📈 Performance Features
+
+### Indexes Created
+- `idx_users_email` - Fast email lookups
+- `idx_users_created_at` - Sort by creation date
+- `idx_users_last_seen` - Sort by activity
+- `idx_users_is_active` - Filter active users
+
+### Query Examples
+```sql
+-- Get all active users
+SELECT * FROM public.users WHERE is_active = true;
+
+-- Get users created today
+SELECT * FROM public.users 
+WHERE created_at > CURRENT_DATE;
+
+-- Get user by email
+SELECT * FROM public.users WHERE email = 'user@example.com';
+```
+
+## 🔒 Security Features
+
+### Row Level Security (RLS)
+- Users can only access their own data
+- Prevents unauthorized data access
+- Secure by default
+
+### Trigger Security
+- `SECURITY DEFINER` - Runs with proper privileges
+- `SET search_path = ''` - Prevents injection attacks
+- Fully qualified object names
+
+## 🎯 Production Checklist
+
+- [ ] Database triggers created and tested
+- [ ] RLS policies configured
+- [ ] Indexes created for performance
+- [ ] OAuth providers configured (if using)
+- [ ] Error handling implemented
+- [ ] User data validation
+- [ ] Backup strategy in place
+
+## 📚 Advanced Usage
+
+### Custom User Fields
+```sql
+-- Add more fields to users table
+ALTER TABLE public.users 
+ADD COLUMN phone TEXT,
+ADD COLUMN company TEXT,
+ADD COLUMN role TEXT DEFAULT 'user';
+```
+
+### Additional Triggers
+```sql
+-- Log user logins
+CREATE OR REPLACE FUNCTION public.log_user_login()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_logins (user_id, login_at)
+  VALUES (NEW.id, NOW());
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+## 🆘 Support
+
+### Common Issues
+1. **Trigger not firing** → Check Supabase logs
+2. **RLS blocking access** → Verify policies
+3. **Performance issues** → Check indexes
+4. **OAuth not working** → Verify redirect URIs
+
+### Debug Commands
+```sql
+-- Check triggers
+SELECT * FROM information_schema.triggers WHERE trigger_name LIKE '%user%';
+
+-- Check functions
+SELECT * FROM information_schema.routines WHERE routine_name LIKE '%user%';
+
+-- Check table structure
+SELECT * FROM information_schema.columns WHERE table_name = 'users';
+```
+
+---
+
+## 🎉 Ready to Use!
+
+This setup provides **automatic user tracking** for any Supabase Auth project with **minimal configuration**. Just run the SQL script and you're done!
+
+**Next Steps:**
+1. Run `database-setup.sql` in Supabase SQL Editor
+2. Test with a new user signup
+3. Verify user record appears in `public.users` table
+4. Start building your app with automatic user tracking! 🚀

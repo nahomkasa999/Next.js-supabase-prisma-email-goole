@@ -8,10 +8,24 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const next = searchParams.get("next") ?? "/";
+  const code = searchParams.get("code");
 
+  const supabase = await createClient();
+
+  // Handle OAuth callback (Google, etc.)
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) {
+      // OAuth successful, redirect to protected page
+      redirect("/protected");
+    } else {
+      // OAuth failed, redirect to error page
+      redirect(`/auth/error?error=${error.message}`);
+    }
+  }
+
+  // Handle email OTP verification
   if (token_hash && type) {
-    const supabase = await createClient();
-
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
