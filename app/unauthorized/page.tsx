@@ -28,7 +28,7 @@ export default function UnauthorizedPage() {
               </Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link href="/protected">
+              <Link href="/dashboard">
                 View Profile
               </Link>
             </Button>
