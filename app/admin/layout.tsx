@@ -18,7 +18,7 @@ export default async function AdminLayout({
         </main>
       </div>
     )
-  } catch (error) {
+  } catch {
     // Redirect to unauthorized page if not admin
     redirect('/unauthorized')
   }

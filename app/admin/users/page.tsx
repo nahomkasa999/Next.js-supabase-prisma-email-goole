@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import Image from 'next/image'
 import { 
   Table, 
   TableBody, 
@@ -139,9 +140,11 @@ export default async function AdminUsersPage() {
                   <TableCell>
                     <div className="flex items-center space-x-3">
                       {user.avatarUrl ? (
-                        <img
+                        <Image
                           src={user.avatarUrl}
                           alt={user.fullName || user.email}
+                          width={32}
+                          height={32}
                           className="h-8 w-8 rounded-full"
                         />
                       ) : (

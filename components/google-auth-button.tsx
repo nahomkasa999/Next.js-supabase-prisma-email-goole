@@ -10,7 +10,7 @@ interface GoogleAuthButtonProps {
   className?: string
 }
 
-export function GoogleAuthButton({ mode, onError, className }: GoogleAuthButtonProps) {
+export function GoogleAuthButton({ onError, className }: Omit<GoogleAuthButtonProps, 'mode'>) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleGoogleAuth = async () => {

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit
     
     // Build where clause
-    const where: any = {}
+    const where: Record<string, unknown> = {}
     
     if (search) {
       where.OR = [
@@ -69,10 +69,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check if user is super admin
-    const admin = await requireAdmin()
+    await requireAdmin()
     
     const body = await request.json()
-    const { email, fullName, role } = body
+    const { email } = body
     
     if (!email) {
       return NextResponse.json(

@@ -50,7 +50,7 @@ export async function PUT(
     const body = await request.json()
     const { role, isActive } = body
     
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
     
     if (role !== undefined) {
       updateData.role = role

@@ -8,8 +8,6 @@ import {
   UserCheck, 
   Shield, 
   Activity, 
-  TrendingUp,
-  Calendar,
   Settings,
   BarChart3
 } from 'lucide-react'
