@@ -1,4 +1,6 @@
 @tailwind base;
+
+@custom-variant dark (&:is(.dark *));
 @tailwind components;
 @tailwind utilities;
 
@@ -62,4 +64,400 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Ensure sidebar has solid background */
+[data-sidebar="sidebar"] {
+  background-color: hsl(var(--sidebar));
+  color: hsl(var(--sidebar-foreground));
+}
+
+/* Ensure sidebar gap works properly */
+[data-slot="sidebar-gap"] {
+  width: var(--sidebar-width);
+}
+
+/* Ensure sidebar container has proper width */
+[data-slot="sidebar-container"] {
+  width: var(--sidebar-width);
+}
+
+/* Debug sidebar states */
+[data-state="collapsed"] [data-slot="sidebar-container"] {
+  width: var(--sidebar-width-icon);
+}
+
+[data-state="collapsed"] [data-slot="sidebar-gap"] {
+  width: var(--sidebar-width-icon);
+}
+
+/* Ensure collapsed state works properly */
+[data-state="collapsed"] [data-sidebar="sidebar"] {
+  width: var(--sidebar-width-icon);
+}
+
+/* Ensure text is hidden in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] span {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+/* Ensure icons are visible in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] svg {
+  opacity: 1;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Ensure sidebar menu buttons work in collapsed state */
+[data-state="collapsed"] [data-sidebar="menu-button"] {
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 0.5rem !important;
+  justify-content: center;
+}
+
+[data-state="collapsed"] [data-sidebar="menu-button"] span {
+  display: none;
+}
+
+/* Ensure sidebar group labels are hidden in collapsed state */
+[data-state="collapsed"] [data-sidebar="group-label"] {
+  display: none;
+}
+
+/* Ensure sidebar groups are hidden in collapsed state when they should be */
+[data-state="collapsed"] [data-sidebar="group"][class*="group-data-[collapsible=icon]:hidden"] {
+  display: none;
+}
+
+/* Ensure proper sidebar toggle behavior */
+[data-state="collapsed"] [data-slot="sidebar-gap"] {
+  width: var(--sidebar-width-icon) !important;
+}
+
+[data-state="collapsed"] [data-slot="sidebar-container"] {
+  width: var(--sidebar-width-icon) !important;
+}
+
+[data-state="collapsed"] [data-sidebar="sidebar"] {
+  width: var(--sidebar-width-icon) !important;
+}
+
+/* Hide text labels in collapsed state but keep icons visible */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] span {
+  display: none !important;
+}
+
+/* Ensure icons are always visible in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* Ensure menu buttons are properly sized in collapsed state */
+[data-state="collapsed"] [data-sidebar="menu-button"] {
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 0.5rem !important;
+  justify-content: center !important;
+}
+
+/* Hide group labels in collapsed state */
+[data-state="collapsed"] [data-sidebar="group-label"] {
+  display: none !important;
+}
+
+/* Hide projects section in collapsed state */
+[data-state="collapsed"] [data-sidebar="group"][class*="group-data-[collapsible=icon]:hidden"] {
+  display: none !important;
+}
+
+/* Add smooth transitions for sidebar toggle */
+[data-slot="sidebar-gap"],
+[data-slot="sidebar-container"],
+[data-sidebar="sidebar"] {
+  transition: width 300ms ease-in-out;
+}
+
+/* Ensure main content adjusts smoothly */
+[data-slot="sidebar-inset"] {
+  transition: margin-left 300ms ease-in-out;
+}
+
+/* Ensure proper spacing in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] {
+  padding: 0.5rem;
+}
+
+/* Ensure team switcher and user profile work in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+/* Hide dropdown arrows and chevron icons in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] .ml-auto {
+  display: none !important;
+}
+
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] .ml-auto {
+  display: none !important;
+}
+
+/* Hide all chevron right icons in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] svg[class*="chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] svg[class*="Chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] .ml-auto svg {
+  display: none !important;
+}
+
+/* Show main navigation icons in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] > svg:first-child {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* Hide chevron and dropdown icons specifically */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg[class*="chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg[class*="Chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] .ml-auto svg {
+  display: none !important;
+}
+
+/* Hide all chevron right icons specifically */
+[data-state="collapsed"] [data-sidebar="sidebar"] svg[data-lucide="chevron-right"],
+[data-state="collapsed"] [data-sidebar="sidebar"] svg[data-lucide="chevrons-up-down"],
+[data-state="collapsed"] [data-sidebar="sidebar"] .lucide-chevron-right,
+[data-state="collapsed"] [data-sidebar="sidebar"] .lucide-chevrons-up-down {
+  display: none !important;
+}
+
+/* Ensure main navigation icons are visible in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0.25rem auto !important;
+}
+
+/* Ensure proper collapsed sidebar layout */
+[data-state="collapsed"] [data-sidebar="sidebar"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 0.5rem !important;
+  height: 100% !important;
+  justify-content: space-between !important;
+}
+
+/* Ensure sidebar content is visible */
+[data-state="collapsed"] [data-sidebar="content"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+/* Ensure sidebar groups are visible */
+[data-state="collapsed"] [data-sidebar="group"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+/* Ensure menu buttons are centered in collapsed state */
+[data-state="collapsed"] [data-sidebar="menu-button"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 0.5rem !important;
+  margin: 0.25rem 0 !important;
+}
+
+/* Ensure main navigation icons are visible and properly sized */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg:first-child,
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] > svg {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Ensure all SVG icons in menu buttons are visible */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg {
+  display: block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Hide only chevron and dropdown icons */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg[class*="chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] svg[class*="Chevron"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] .ml-auto svg {
+  display: none !important;
+}
+
+/* Ensure team switcher icon is visible and centered */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] [class*="bg-sidebar-primary"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex-shrink: 0 !important;
+  margin: 0 auto !important;
+}
+
+/* Ensure team switcher button is centered */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"]:first-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  margin: 0.25rem auto !important;
+}
+
+/* Ensure profile picture/avatar is visible in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] [class*="avatar"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="menu-button"] [class*="Avatar"] {
+  display: block !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Ensure the entire nav-user section is visible in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="footer"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  padding: 0.5rem !important;
+  margin-top: auto !important;
+}
+
+/* Ensure footer is always visible */
+[data-sidebar="footer"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  padding: 0.5rem !important;
+}
+
+/* Ensure nav-user menu is visible */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="footer"] [data-sidebar="menu"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+/* Ensure nav-user menu item is visible */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="footer"] [data-sidebar="menu-item"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+/* Ensure avatar is visible and properly sized in collapsed state */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-slot="avatar"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  flex-shrink: 0 !important;
+  margin: 0 auto !important;
+}
+
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-slot="avatar-image"],
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-slot="avatar-fallback"] {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Ensure the nav-user button is properly sized and centered */
+[data-state="collapsed"] [data-sidebar="sidebar"] [data-sidebar="footer"] [data-sidebar="menu-button"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 0.5rem !important;
+  margin: 0.25rem auto !important;
+}
+
+/* Force nav-user to be visible */
+[data-sidebar="footer"] [data-sidebar="menu"] {
+  display: flex !important;
+  width: 100% !important;
+}
+
+[data-sidebar="footer"] [data-sidebar="menu-item"] {
+  display: flex !important;
+  width: 100% !important;
+}
+
+[data-sidebar="footer"] [data-sidebar="menu-button"] {
+  display: flex !important;
+  width: 100% !important;
 }
