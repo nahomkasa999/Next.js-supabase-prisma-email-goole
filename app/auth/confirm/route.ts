@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      // OAuth successful, redirect to protected page
-      redirect("/protected");
+      // OAuth successful, redirect to dashboard
+      redirect("/dashboard");
     } else {
       // OAuth failed, redirect to error page
       redirect(`/auth/error?error=${error.message}`);
